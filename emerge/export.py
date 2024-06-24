@@ -262,6 +262,13 @@ class D3Exporter:
             graph = graph_representation.digraph
             data = json_graph.node_link_data(graph)
 
+            # write data into a json file
+            target_export_file_path = export_dir + \
+                '/' + 'emerge-' + graph_representation.graph_type.name.lower() + '-data.json'
+            
+            with open(target_export_file_path, 'w', encoding="utf-8") as file:
+                json.dump(data, file)
+
             d3_js_string += 'const ' + graph_representation.graph_type.name.lower() + ' = ' + json.dumps(data)
             json_statistics = {}
             json_metrics = {}

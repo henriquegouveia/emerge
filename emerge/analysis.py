@@ -479,7 +479,7 @@ class Analysis:
                 filesystem_graph.digraph.add_edge(relative_path_parent, relative_path_directoy_node)
 
             if self.ignore_files_containing:
-                files[:] = [f for f in files if f not in self.ignore_files_containing]
+                files[:] = [f for f in files if not any(substring in f for substring in self.ignore_files_containing)]
 
             for file_name in files:
                 absolute_path_to_file = os.path.join(root, file_name)
