@@ -63,6 +63,7 @@ class CoreParsingKeyword(Enum):
     STOP_BLOCK_COMMENT = "stop_block_comment"
     INHERITED_ENTITY_NAME = "inherited_entity_name"
     IMPORT_ENTITY_NAME = "import_entity_name"
+    USING_ENTITY_NAME = "using_entity_name"
     IMPORT_PATH = "import_path"
     COLON = ":"
     SEMICOLON = ";"

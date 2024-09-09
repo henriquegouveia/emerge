@@ -235,9 +235,19 @@ class CSharpParser(AbstractParser, ParsingMixin):
             for _, obj, following in self._gen_word_read_ahead(file_result.scanned_tokens):
                 if obj == CSharpParsingKeyword.USING.value:
                     try:
+                        using_entity_name = pp.Word(pp.alphanums + CoreParsingKeyword.DOT.value + CoreParsingKeyword.ASTERISK.value)
                         read_ahead_string = self.create_read_ahead_string(obj, following)
-                        import_name = read_ahead_string.split(';')[0].strip()
-                        file_result.scanned_import_dependencies.append(import_name)
+                        expression_to_match = pp.Keyword(CSharpParsingKeyword.USING.value) + \
+                            using_entity_name.setResultsName(CoreParsingKeyword.USING_ENTITY_NAME.value) + pp.FollowedBy(CoreParsingKeyword.SEMICOLON.value)
+                        
+                        parsing_result = expression_to_match.parseString(read_ahead_string)
+                        dependency: str = getattr(parsing_result, CoreParsingKeyword.USING_ENTITY_NAME.value)
+                        
+                        file_result.scanned_import_dependencies.append(dependency)
+                    except pp.ParseException as exception:
+                        LOGGER.warning(f'warning: could not parse result {exception}')
+                        LOGGER.warning(f'next tokens: {[obj] + following[:ParsingMixin.Constants.MAX_DEBUG_TOKENS_READAHEAD.value]}')
+                        continue
                     except Exception as ex:
                         LOGGER.warning(f"Error extracting using statement from file {file_result.unique_name}: {ex}")
 
