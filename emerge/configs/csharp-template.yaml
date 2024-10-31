@@ -1,0 +1,33 @@
+---
+project_name: csharp-example-project
+loglevel: info
+analyses:
+- analysis_name: csharp check
+  source_directory: ../WhiteBoxCSharp/Whitebox
+  only_permit_languages:
+  - chsarp
+  only_permit_file_extensions:
+  - .cs
+  file_scan:
+  - number_of_methods
+  - source_lines_of_code
+  - dependency_graph
+  - louvain_modularity
+  - fan_in_out
+  - tfidf
+  entity_scan:
+  - dependency_graph
+  - inheritance_graph
+  - complete_graph
+  - source_lines_of_code
+  - number_of_methods
+  - fan_in_out
+  - louvain_modularity
+  - tfidf
+  export:
+  - directory: ./emerge/export/teste2
+  - graphml
+  - json
+  - tabular_file
+  - tabular_console_overall
+  - d3

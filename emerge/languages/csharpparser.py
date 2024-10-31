@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pyparsing as pp
 import coloredlogs
+import re
 
 from emerge.languages.abstractparser import AbstractParser, ParsingMixin, Parser, CoreParsingKeyword, LanguageType
 from emerge.results import FileResult, EntityResult
@@ -179,26 +180,52 @@ class CSharpParser(AbstractParser, ParsingMixin):
                         if self.is_entity_in_ignore_list(entity_result.entity_name, analysis):
                             pass
                         else:
-                            entity_results.append(entity_result)
+                            # add dependencies based on the full file, as the way the entity is parsed, using statements are not included
+                            entity_result_with_dependencies = self._add_usings_to_single_entity_result(entity_result,scanned_source_code)
+                            entity_results.append(entity_result_with_dependencies)
 
                     for entity_result in entity_results:
                         LOGGER.debug(f'{entity_result.entity_name=}')
                         self._add_inheritance_to_entity_result(entity_result)
                         self._results[entity_result.entity_name] = entity_result
 
-        self._add_usings_to_entity_results(analysis)
 
     def _add_inheritance_to_entity_result(self, result: AbstractEntityResult) -> None:
         LOGGER.debug(f'extracting inheritance from entity result {result.entity_name}...')
         parent_name = ''
 
         for current_token, next_token in zip(result.scanned_tokens, result.scanned_tokens[1:] + [""]):
-            if current_token == CSharpParsingKeyword.COLON.value:
+            if current_token == CoreParsingKeyword.COLON.value:
                 parent_name = next_token
                 break
 
         if parent_name:
             result.scanned_inheritance_dependencies.append(parent_name)
+
+    def _add_usings_to_single_entity_result(self,entity_result,scanned_tokens) -> AbstractEntityResult:
+        """In C#, using statements are scoped to the file level.
+        This method iterates through each entity's scanned tokens
+        to find and add using statements as import dependencies.
+        """
+        LOGGER.debug('adding usings to entity result...')
+
+        for _, obj, following in self._gen_word_read_ahead(scanned_tokens):
+            if obj == CSharpParsingKeyword.USING.value:
+                try:
+                    read_ahead_string = self.create_read_ahead_string(obj, following)
+                    import_name = read_ahead_string.split(';')[0].strip()
+                    entity_result.scanned_import_dependencies.append(import_name.split(' ')[1].strip())
+                except Exception as ex:
+                    LOGGER.warning(
+                        f"Error extracting using statement from entity {entity_result.entity_name}: {ex}"
+                    )
+            elif any(keyword in obj for keyword in [CSharpParsingKeyword.NAMESPACE.value,
+                                                    CSharpParsingKeyword.CLASS.value,
+                                                    CSharpParsingKeyword.STRUCT.value,
+                                                    CSharpParsingKeyword.INTERFACE.value,
+                                                    CSharpParsingKeyword.ENUM.value]):
+                break
+        return entity_result
 
     def _add_usings_to_entity_results(self, analysis) -> None:
         """In C#, using statements are scoped to the file level.
@@ -223,9 +250,9 @@ class CSharpParser(AbstractParser, ParsingMixin):
                         LOGGER.warning(
                             f"Error extracting using statement from entity {entity_result.entity_name}: {ex}"
                         )
-
     def _add_usings_to_file_results(self, analysis) -> None:
         LOGGER.debug('adding usings to file results...')
+        namespace_pattern = r'^\s*using\s+[a-zA-Z0-9_.]+$'
         file_results: Dict[str, FileResult] = {
             k: v for (k, v) in self.results.items()
             if v.analysis is analysis and isinstance(v, FileResult)
@@ -237,7 +264,8 @@ class CSharpParser(AbstractParser, ParsingMixin):
                     try:
                         read_ahead_string = self.create_read_ahead_string(obj, following)
                         import_name = read_ahead_string.split(';')[0].strip()
-                        file_result.scanned_import_dependencies.append(import_name)
+                        if re.match(namespace_pattern, import_name):
+                            file_result.scanned_import_dependencies.append(import_name.split(' ')[1].strip())
                     except Exception as ex:
                         LOGGER.warning(f"Error extracting using statement from file {file_result.unique_name}: {ex}")
 
