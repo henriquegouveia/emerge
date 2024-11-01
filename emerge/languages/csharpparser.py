@@ -181,7 +181,7 @@ class CSharpParser(AbstractParser, ParsingMixin):
                             pass
                         else:
                             # add dependencies based on the full file, as the way the entity is parsed, using statements are not included
-                            entity_result_with_dependencies = self._add_usings_to_single_entity_result(entity_result,scanned_source_code)
+                            entity_result_with_dependencies = self._add_usings_to_single_entity_result(entity_result,scanned_source_code,analysis)
                             entity_results.append(entity_result_with_dependencies)
 
                     for entity_result in entity_results:
@@ -202,7 +202,7 @@ class CSharpParser(AbstractParser, ParsingMixin):
         if parent_name:
             result.scanned_inheritance_dependencies.append(parent_name)
 
-    def _add_usings_to_single_entity_result(self,entity_result,scanned_tokens) -> AbstractEntityResult:
+    def _add_usings_to_single_entity_result(self,entity_result,scanned_tokens, analysis) -> AbstractEntityResult:
         """In C#, using statements are scoped to the file level.
         This method iterates through each entity's scanned tokens
         to find and add using statements as import dependencies.
@@ -214,7 +214,12 @@ class CSharpParser(AbstractParser, ParsingMixin):
                 try:
                     read_ahead_string = self.create_read_ahead_string(obj, following)
                     import_name = read_ahead_string.split(';')[0].strip()
-                    entity_result.scanned_import_dependencies.append(import_name.split(' ')[1].strip())
+                    if self._is_dependency_in_ignore_list(import_name, analysis):
+                        LOGGER.debug(f'ignoring dependency from {entity_result.unique_name} to {import_name}')
+                    else:
+                        entity_result.scanned_import_dependencies.append(import_name.split(' ')[1].strip())
+                        LOGGER.debug(f'adding import: {import_name}')
+                        
                 except Exception as ex:
                     LOGGER.warning(
                         f"Error extracting using statement from entity {entity_result.entity_name}: {ex}"
@@ -265,7 +270,11 @@ class CSharpParser(AbstractParser, ParsingMixin):
                         read_ahead_string = self.create_read_ahead_string(obj, following)
                         import_name = read_ahead_string.split(';')[0].strip()
                         if re.match(namespace_pattern, import_name):
-                            file_result.scanned_import_dependencies.append(import_name.split(' ')[1].strip())
+                            if self._is_dependency_in_ignore_list(import_name, analysis):
+                                LOGGER.debug(f'ignoring dependency from {file_result.unique_name} to {import_name}')
+                            else:
+                                file_result.scanned_import_dependencies.append(import_name.split(' ')[1].strip())
+                                LOGGER.debug(f'adding import: {import_name}')
                     except Exception as ex:
                         LOGGER.warning(f"Error extracting using statement from file {file_result.unique_name}: {ex}")
 
