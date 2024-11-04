@@ -194,11 +194,17 @@ class CSharpParser(AbstractParser, ParsingMixin):
         LOGGER.debug(f'extracting inheritance from entity result {result.entity_name}...')
         parent_name = ''
 
+        tokenBefore = ''
+        classOrInterfaceName = ''
         for current_token, next_token in zip(result.scanned_tokens, result.scanned_tokens[1:] + [""]):
-            if current_token == CoreParsingKeyword.COLON.value:
+            if any(keyword in current_token for keyword in [CSharpParsingKeyword.CLASS.value,
+                                                    CSharpParsingKeyword.INTERFACE.value]):
+                classOrInterfaceName = next_token
+                
+            if current_token == CoreParsingKeyword.COLON.value and tokenBefore == classOrInterfaceName:
                 parent_name = next_token
                 break
-
+            tokenBefore = current_token        
         if parent_name:
             result.scanned_inheritance_dependencies.append(parent_name)
 
