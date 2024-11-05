@@ -27,6 +27,7 @@ from emerge.languages.kotlinparser import KotlinParser
 from emerge.languages.objcparser import ObjCParser
 from emerge.languages.rubyparser import RubyParser
 from emerge.languages.pyparser import PythonParser
+from emerge.languages.phpparser import PHPParser
 
 from emerge.log import Logger
 
@@ -57,6 +58,11 @@ class LanguageExtension(Enum):
     C_HEADER = '.h'
     PYTHON = '.py'
     GO = '.go'
+    PHP = '.php'
+    INC = '.inc'
+    DRUPAL_MODULE = '.module'
+    DRUPAL_INSTALL = '.install'
+    DRUPAL_THEME = '.theme'
 
     @staticmethod
     def valid_key(key) -> bool:
@@ -117,7 +123,8 @@ class FileScanMapper:
                     return CParser.parser_name()
                 if 'cpp' in only_permit_languages:
                     return CPPParser.parser_name()
-
+        if file_extension == LanguageExtension.PHP.value or file_extension == LanguageExtension.INC.value or file_extension == LanguageExtension.DRUPAL_MODULE.value or file_extension == LanguageExtension.DRUPAL_INSTALL.value or file_extension == LanguageExtension.DRUPAL_THEME.value:
+            return PHPParser.parser_name()
         return None
 
 
