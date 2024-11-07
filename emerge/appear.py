@@ -24,6 +24,7 @@ from emerge.languages.rubyparser import RubyParser
 from emerge.languages.pyparser import PythonParser
 from emerge.languages.goparser import GoParser
 from emerge.languages.csharpparser import CSharpParser
+from emerge.languages.vbnetparser import VBNetParser
 
 from emerge.config import Configuration
 from emerge.analyzer import Analyzer
@@ -59,6 +60,7 @@ class Emerge:
             PythonParser.parser_name(): PythonParser(),
             GoParser.parser_name(): GoParser(),
             CSharpParser.parser_name(): CSharpParser(),
+            VBNetParser.parser_name(): VBNetParser()
         }
 
         self.config.supported_languages = [x.language_type() for x in self._parsers.values()]
