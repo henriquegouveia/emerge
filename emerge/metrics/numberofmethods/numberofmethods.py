@@ -52,6 +52,10 @@ class NumberOfMethodsMetric(CodeMetric):
             "PY":         r"(def)\s.+(.+):",
             "GO":         r"func\s*?[a-zA-Z\d_\(\)\:\*\s\-\<\>\?\,\[\]\.]+?\s*?\{",
             "PHP":        r"function\s+?[a-zA-Z\d_]+\s*?\([a-zA-Z\d\s_,\>\<\?\*\.\[\]\&]*?\)\s*?\{",
+            "TWIG":       r"\{\%\s*?block\s+([a-zA-Z\d_]+)\s*?\%\}.*?\{\%\s*?endblock\s*?\%\}",
+            "JSON":       r"\{.*\}",  # JSON doesn't have functions; this matches JSON objects.
+            "CSS":        r"([a-zA-Z\d_\-]+\s*?\{[^}]*\})",  # CSS rulesets
+            "SCSS":       r"([a-zA-Z\d_\-]+)\s*?\{[^}]*\}",  # SCSS rulesets
         }
 
         self.compiled_re: Dict[str, Pattern] = {}

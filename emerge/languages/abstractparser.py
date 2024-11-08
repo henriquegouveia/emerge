@@ -36,6 +36,10 @@ class LanguageType(Enum):
     PY = auto()
     GO = auto()
     PHP = auto()
+    TWIG = auto()
+    JSON = auto()
+    CSS = auto()
+    SCSS = auto()
 
 
 @unique
@@ -53,7 +57,10 @@ class Parser(Enum):
     PYTHON_PARSER = auto()
     GO_PARSER = auto()
     PHP_PARSER = auto()
-
+    TWIG_PARSER = auto()
+    JSON_PARSER = auto()
+    CSS_PARSER = auto()
+    SCSS_PARSER = auto()
 
 @unique
 class CoreParsingKeyword(Enum):

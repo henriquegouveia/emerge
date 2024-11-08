@@ -24,6 +24,10 @@ from emerge.languages.rubyparser import RubyParser
 from emerge.languages.pyparser import PythonParser
 from emerge.languages.goparser import GoParser
 from emerge.languages.phpparser import PHPParser
+from emerge.languages.cssparser import CSSParser
+from emerge.languages.jsonparser import JSONParser
+from emerge.languages.scssparser import SCSSParser
+from emerge.languages.twigparser import TwigParser
 
 from emerge.config import Configuration
 from emerge.analyzer import Analyzer
@@ -59,6 +63,10 @@ class Emerge:
             PythonParser.parser_name(): PythonParser(),
             GoParser.parser_name(): GoParser(),
             PHPParser.parser_name(): PHPParser(),
+            CSSParser.parser_name(): CSSParser(),
+            JSONParser.parser_name(): JSONParser(),
+            SCSSParser.parser_name(): SCSSParser(),
+            TwigParser.parser_name(): TwigParser(),
         }
 
         self.config.supported_languages = [x.language_type() for x in self._parsers.values()]
