@@ -27,7 +27,7 @@ class VBNetParsingKeyword(Enum):
     IMPORT = "Imports"
     CLOSE_SCOPE = "End"
     SUB = "Sub"
-    FUNTION = "Function"
+    FUNCTION = "Function"
     IF = "If" 
     INLINE_COMMENT = "'"
     START_BLOCK_COMMENT = "''"
@@ -320,8 +320,9 @@ class VBNetParser (AbstractParser, ParsingMixin):
 
         filtered_list_no_comments = self.preprocess_file_content_and_generate_token_list(source_string_no_comments)
 
+        previous_obj = ''
         for _, obj, following in self._gen_word_read_ahead(filtered_list_no_comments):
-            if obj in entity_keywords:
+            if obj in entity_keywords and previous_obj != close_scope_character:
                 read_ahead_string = self.create_read_ahead_string(obj, following)
 
                 try:
@@ -350,7 +351,7 @@ class VBNetParser (AbstractParser, ParsingMixin):
                                                     VBNetParsingKeyword.STRUCT.value,
                                                     VBNetParsingKeyword.INTERFACE.value,
                                                     VBNetParsingKeyword.ENUM.value,
-                                                    VBNetParsingKeyword.FUNTION.value,
+                                                    VBNetParsingKeyword.FUNCTION.value,
                                                     VBNetParsingKeyword.SUB.value,
                                                     VBNetParsingKeyword.IF.value]):
                         scope_level += 1
@@ -360,7 +361,7 @@ class VBNetParser (AbstractParser, ParsingMixin):
                                                     VBNetParsingKeyword.STRUCT.value,
                                                     VBNetParsingKeyword.INTERFACE.value,
                                                     VBNetParsingKeyword.ENUM.value,
-                                                    VBNetParsingKeyword.FUNTION.value,
+                                                    VBNetParsingKeyword.FUNCTION.value,
                                                     VBNetParsingKeyword.SUB.value,
                                                     VBNetParsingKeyword.IF.value]):
                         scope_level -= 1
@@ -373,6 +374,7 @@ class VBNetParser (AbstractParser, ParsingMixin):
                         found_entities[parsing_result.entity_name].append(token)                       
                     iterTokens+=1
                     iterNextTokens+=1
+            previous_obj = obj
 
         for entity_name, tokens in found_entities.items():
 

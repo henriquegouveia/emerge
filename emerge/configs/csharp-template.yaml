@@ -17,7 +17,6 @@ analyses:
   - dependency_graph
   - louvain_modularity
   - fan_in_out
-  - tfidf
   entity_scan:
   - dependency_graph
   - inheritance_graph
@@ -26,7 +25,6 @@ analyses:
   - number_of_methods
   - fan_in_out
   - louvain_modularity
-  - tfidf
   export:
   - directory: ./emerge/export/teste2
   - graphml
