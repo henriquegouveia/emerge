@@ -27,6 +27,7 @@ from emerge.languages.kotlinparser import KotlinParser
 from emerge.languages.objcparser import ObjCParser
 from emerge.languages.rubyparser import RubyParser
 from emerge.languages.pyparser import PythonParser
+from emerge.languages.xmlparser import XMLParser
 
 from emerge.log import Logger
 
@@ -57,6 +58,7 @@ class LanguageExtension(Enum):
     C_HEADER = '.h'
     PYTHON = '.py'
     GO = '.go'
+    XML = '.xml'
 
     @staticmethod
     def valid_key(key) -> bool:
@@ -109,6 +111,8 @@ class FileScanMapper:
             return PythonParser.parser_name()
         if file_extension == LanguageExtension.GO.value:
             return GoParser.parser_name()
+        if file_extension == LanguageExtension.XML.value:
+            return XMLParser.parser_name()
         if file_extension == LanguageExtension.C_HEADER.value:
             if only_permit_languages:
                 if 'objc' in only_permit_languages:

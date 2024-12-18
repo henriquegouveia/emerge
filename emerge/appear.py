@@ -23,6 +23,7 @@ from emerge.languages.objcparser import ObjCParser
 from emerge.languages.rubyparser import RubyParser
 from emerge.languages.pyparser import PythonParser
 from emerge.languages.goparser import GoParser
+from emerge.languages.xmlparser import XMLParser
 
 from emerge.config import Configuration
 from emerge.analyzer import Analyzer

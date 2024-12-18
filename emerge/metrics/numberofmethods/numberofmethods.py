@@ -51,6 +51,7 @@ class NumberOfMethodsMetric(CodeMetric):
             "CPP":        r"\b(?!if|for|while|switch)\b[a-zA-Z\d\_\:\<\>\*\&]+?\s*?\([\(a-zA-Z\d\s_,\*&:]*?\)\s*?\w+\s*?\{",
             "PY":         r"(def)\s.+(.+):",
             "GO":         r"func\s*?[a-zA-Z\d_\(\)\:\*\s\-\<\>\?\,\[\]\.]+?\s*?\{",
+            "XML":        r"<([a-zA-Z_][\w\-\.]*)(\s+[^>]*?)?/>|<([a-zA-Z_][\w\-\.]*)(\s+[^>]*?)?>(.*?)</\3>",  # Matches self-closing or opening/closing tags
         }
 
         self.compiled_re: Dict[str, Pattern] = {}
