@@ -3,11 +3,23 @@ project_name: csharp-example-project
 loglevel: info
 analyses:
 - analysis_name: csharp check
-  source_directory: ../WhiteBoxCSharp/Whitebox
+  source_directory: ../prdcts_bc_ee_client/entry-exit-product
   only_permit_languages:
   - chsarp
   only_permit_file_extensions:
   - .cs
+  ignore_directories_containing:
+  - .build
+  - test
+  - bin
+  - .git
+  - build
+  - .gradle
+  - .idea
+  - gradle
+  - gradlew
+  - UnitTests
+  - .Tests
   ignore_dependencies_matching:
   - ^\s*using\s+System(?:\.[a-zA-Z][a-zA-Z0-9]*)*\s*$
   - ^\s*using\s+Newtonsoft\.Json\s*$
@@ -19,14 +31,11 @@ analyses:
   - fan_in_out
   entity_scan:
   - dependency_graph
-  - inheritance_graph
-  - complete_graph
-  - source_lines_of_code
   - number_of_methods
   - fan_in_out
   - louvain_modularity
   export:
-  - directory: ./emerge/export/teste2
+  - directory: ./emerge/export/sitaee
   - graphml
   - json
   - tabular_file

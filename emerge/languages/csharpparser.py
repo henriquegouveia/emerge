@@ -97,7 +97,7 @@ class CSharpParser(AbstractParser, ParsingMixin):
 
     def generate_file_result_from_analysis(self, analysis, *, file_name: str, full_file_path: str, file_content: str) -> None:
         LOGGER.debug('generating file results...')
-
+        file_content = self.remove_bom(file_content)
         scanned_tokens: List[str] = self.preprocess_file_content_and_generate_token_list(file_content)
 
         # make sure to create unique names by using the relative analysis path as a base for the result
@@ -309,6 +309,11 @@ class CSharpParser(AbstractParser, ParsingMixin):
                         f"Incomplete namespace declaration found in file: {result.scanned_file_name}"
                     )
                     break
+    def remove_bom(self, input_string: str) -> str:
+        # Check if the string starts with the BOM character sequence and remove it
+        if input_string.startswith('ï»¿'):
+            return input_string[3:]  # Return the string without the BOM
+        return input_string  # Return the original string if no BOM is present  
 
 if __name__ == "__main__":
     LEXER = CSharpParser()
