@@ -1,0 +1,43 @@
+---
+project_name: csharp-example-project
+loglevel: info
+analyses:
+- analysis_name: csharp check
+  source_directory: ../prdcts_bc_ee_client/entry-exit-product
+  only_permit_languages:
+  - csharp
+  only_permit_file_extensions:
+  - .cs
+  ignore_directories_containing:
+  - .build
+  - test
+  - bin
+  - .git
+  - build
+  - .gradle
+  - .idea
+  - gradle
+  - gradlew
+  - UnitTests
+  - .Tests
+  ignore_dependencies_matching:
+  - ^\s*using\s+System(?:\.[a-zA-Z][a-zA-Z0-9]*)*\s*$
+  - ^\s*using\s+Newtonsoft\.Json\s*$
+  file_scan:
+  - number_of_methods
+  - source_lines_of_code
+  - dependency_graph
+  - louvain_modularity
+  - fan_in_out
+  entity_scan:
+  - dependency_graph
+  - number_of_methods
+  - fan_in_out
+  - louvain_modularity
+  export:
+  - directory: ./emerge/export/sitaee
+  - graphml
+  - json
+  - tabular_file
+  - tabular_console_overall
+  - d3

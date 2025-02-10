@@ -1,0 +1,31 @@
+---
+project_name: vbnet-example-project
+loglevel: info
+analyses:
+- analysis_name: vbnet check
+  source_directory: ../TAHOE%20LOF%20Management%20App/LOFprod
+  only_permit_languages:
+  - vbnet
+  only_permit_file_extensions:
+  - .vb
+  file_scan:
+  - number_of_methods
+  - source_lines_of_code
+  - dependency_graph
+  - louvain_modularity
+  - fan_in_out
+  entity_scan:
+  - dependency_graph
+  - inheritance_graph
+  - complete_graph
+  - source_lines_of_code
+  - number_of_methods
+  - fan_in_out
+  - louvain_modularity
+  export:
+  - directory: ./emerge/export/teste-vb
+  - graphml
+  - json
+  - tabular_file
+  - tabular_console_overall
+  - d3

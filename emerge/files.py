@@ -27,6 +27,8 @@ from emerge.languages.kotlinparser import KotlinParser
 from emerge.languages.objcparser import ObjCParser
 from emerge.languages.rubyparser import RubyParser
 from emerge.languages.pyparser import PythonParser
+from emerge.languages.csharpparser import CSharpParser
+from emerge.languages.vbnetparser import VBNetParser
 
 from emerge.log import Logger
 
@@ -57,6 +59,8 @@ class LanguageExtension(Enum):
     C_HEADER = '.h'
     PYTHON = '.py'
     GO = '.go'
+    CSHARP = '.cs'
+    VBNET = '.vb'
 
     @staticmethod
     def valid_key(key) -> bool:
@@ -117,7 +121,10 @@ class FileScanMapper:
                     return CParser.parser_name()
                 if 'cpp' in only_permit_languages:
                     return CPPParser.parser_name()
-
+        if file_extension == LanguageExtension.CSHARP.value:
+            return CSharpParser.parser_name()
+        if file_extension == LanguageExtension.VBNET.value:
+            return VBNetParser.parser_name()
         return None
 
 

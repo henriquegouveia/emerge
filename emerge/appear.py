@@ -23,6 +23,8 @@ from emerge.languages.objcparser import ObjCParser
 from emerge.languages.rubyparser import RubyParser
 from emerge.languages.pyparser import PythonParser
 from emerge.languages.goparser import GoParser
+from emerge.languages.csharpparser import CSharpParser
+from emerge.languages.vbnetparser import VBNetParser
 
 from emerge.config import Configuration
 from emerge.analyzer import Analyzer
@@ -32,7 +34,7 @@ from emerge.log import Logger, LogLevel
 LOGGER = Logger(logging.getLogger('emerge'))
 coloredlogs.install(level='E', logger=LOGGER.logger(), fmt=Logger.log_format)
 
-__version__ = '2.0.0'
+__version__ = '2.0.1'
 __updated__ = '2023-05-27 12:47:04'
 
 
@@ -56,7 +58,9 @@ class Emerge:
             ObjCParser.parser_name(): ObjCParser(),
             RubyParser.parser_name(): RubyParser(),
             PythonParser.parser_name(): PythonParser(),
-            GoParser.parser_name(): GoParser()
+            GoParser.parser_name(): GoParser(),
+            CSharpParser.parser_name(): CSharpParser(),
+            VBNetParser.parser_name(): VBNetParser()
         }
 
         self.config.supported_languages = [x.language_type() for x in self._parsers.values()]

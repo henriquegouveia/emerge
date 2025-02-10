@@ -153,6 +153,17 @@
             ]
         },
         {
+            "name": "C# / Emerge",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/emerge.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-c",
+                "emerge/configs/csharp-template.yaml"
+            ]
+        },
+        {
             "name": "Run emerge without arguments",
             "type": "python",
             "request": "launch",
