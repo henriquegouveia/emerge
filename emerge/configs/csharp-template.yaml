@@ -5,7 +5,7 @@ analyses:
 - analysis_name: csharp check
   source_directory: ../prdcts_bc_ee_client/entry-exit-product
   only_permit_languages:
-  - chsarp
+  - csharp
   only_permit_file_extensions:
   - .cs
   ignore_directories_containing:
