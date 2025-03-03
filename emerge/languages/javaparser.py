@@ -35,6 +35,9 @@ class JavaParsingKeyword(Enum):
     IMPORT = "import"
     PACKAGE = "package"
     PACKAGE_NAME = "package_name"
+    INTERFACE = "interface"
+    ENUM = "enum"
+    RECORD = "record"
 
 
 class JavaParser(AbstractParser, ParsingMixin):
@@ -133,14 +136,50 @@ class JavaParser(AbstractParser, ParsingMixin):
 
         result: FileResult
         for _, result in filtered_results.items():
-
-            entity_keywords: List[str] = [JavaParsingKeyword.CLASS.value]
+            entity_keywords: List[str] = [
+                JavaParsingKeyword.CLASS.value,
+                JavaParsingKeyword.INTERFACE.value,
+                JavaParsingKeyword.ENUM.value,
+                JavaParsingKeyword.RECORD.value
+            ]
             entity_name = pp.Word(pp.alphanums)
-            match_expression = pp.Keyword(JavaParsingKeyword.CLASS.value) + \
-                entity_name.setResultsName(CoreParsingKeyword.ENTITY_NAME.value) + \
-                pp.Optional(pp.Keyword(JavaParsingKeyword.EXTENDS.value) +
-                            entity_name.setResultsName(CoreParsingKeyword.INHERITED_ENTITY_NAME.value)) + \
-                pp.SkipTo(pp.FollowedBy(JavaParsingKeyword.OPEN_SCOPE.value))
+
+            match_expression = (
+                    (
+                        (
+                            (pp.Keyword(JavaParsingKeyword.CLASS.value) |
+                             pp.Keyword(JavaParsingKeyword.INTERFACE.value) |
+                             pp.Keyword(JavaParsingKeyword.ENUM.value)) +
+                            entity_name.setResultsName(CoreParsingKeyword.ENTITY_NAME.value) +
+                            pp.Optional(
+                                pp.Literal("<") +
+                                pp.SkipTo(pp.Literal(">")) +
+                                pp.Literal(">")
+                            ).suppress() +
+                            pp.Optional(pp.Keyword(JavaParsingKeyword.EXTENDS.value) +
+                                        entity_name.setResultsName(CoreParsingKeyword.INHERITED_ENTITY_NAME.value) +
+                                        pp.Optional(
+                                            pp.Literal("<") +
+                                            pp.SkipTo(pp.Literal(">")) +
+                                            pp.Literal(">")
+                                        ).suppress())
+                        )
+                    ) |
+                    (
+                        pp.Keyword(JavaParsingKeyword.RECORD.value) +
+                        entity_name.setResultsName(CoreParsingKeyword.ENTITY_NAME.value) +
+                        pp.Optional(
+                            pp.Literal("<") +
+                            pp.SkipTo(pp.Literal(">")) +
+                            pp.Literal(">")
+                        ).suppress() +
+                        pp.Group(
+                            pp.Literal("(") +
+                            pp.SkipTo(pp.Literal(")")) +
+                            pp.Literal(")")
+                        ).suppress()
+                    )
+                )
 
             comment_keywords: Dict[str, str] = {
                 CoreParsingKeyword.LINE_COMMENT.value: JavaParsingKeyword.INLINE_COMMENT.value,
