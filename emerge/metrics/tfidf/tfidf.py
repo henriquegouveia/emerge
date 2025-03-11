@@ -34,24 +34,32 @@ class TFIDFMetric(CodeMetric):
         # pylint: disable=line-too-long
         """The following language specific stopwords should be excluded from the TF-IDF calculation."""
         self.language_specific_stopwords = {
-            "JAVA":       {'true', 'false', 'null', 'throw', 'return', 'static', 'public', 'private', 'protected', 'super', 'final', 'char', 'string', 'synchronized', 'fi', 'throws', 'long', 'int', 'import', 'new', 'void', 'null', 'char'},
-            "KOTLIN":     {'onitemclicklistener', 'otherwise', 'null', 'val', 'var', 'lateinit', 'fun', 'throw', 'private', 'override', 'import', 'sealed', 'const', 'object', 'set', 'return', 'string', 'map', 'int', 'boolean', 'true', 'false', 'abstract'},
-            "OBJC":       {'cgfloat', 'float', 'cgsize', 'include', 'struct', 'const', 'new', 'self', 'bool', 'object', 'return', 'nonatomic', 'atomic', 'readonly', 'readwrite', 'case', 'null', 'long', 'nsobject', 'nullable', 'nonnull', 'void', 'yes', 'no', 'id', 'int', 'strong', 'assign'},
-            "SWIFT":      {'didset', 'cgfloat', 'float', 'cgsize', 'func', 'let', 'var', 'weak', 'return', 'true', 'false', 'line', 'file', 'try', 'override', 'self', 'keypath', 'case', 'guard', 'some', 'void', 'nil', 'throws', 'private', 'struct', 'class', 'protocol', 'bool', 'static', 'inout', 'int', 'string'},
-            "RUBY":       {'true', 'false', 'require', 'module', 'class', 'fi', 'unless', 'begin', 'break', 'self', 'nil', 'void', 'super', 'int', 'bytes', 'array', 'string'},
-            "GROOVY":     {'true', 'false', 'null', 'throw', 'return', 'static', 'public', 'private', 'protected', 'super', 'final', 'char', 'string', 'synchronized', 'fi', 'throws', 'long', 'int', 'import', 'new', 'void', 'null', 'char'},
+            "JAVA": {'true', 'false', 'null', 'throw', 'return', 'static', 'public', 'private', 'protected', 'super', 'final', 'char', 'string', 'synchronized', 'fi', 'throws', 'long', 'int', 'import', 'new', 'void', 'null', 'char'},
+            "KOTLIN": {'onitemclicklistener', 'otherwise', 'null', 'val', 'var', 'lateinit', 'fun', 'throw', 'private', 'override', 'import', 'sealed', 'const', 'object', 'set', 'return', 'string', 'map', 'int', 'boolean', 'true', 'false', 'abstract'},
+            "OBJC": {'cgfloat', 'float', 'cgsize', 'include', 'struct', 'const', 'new', 'self', 'bool', 'object', 'return', 'nonatomic', 'atomic', 'readonly', 'readwrite', 'case', 'null', 'long', 'nsobject', 'nullable', 'nonnull', 'void', 'yes', 'no', 'id', 'int', 'strong', 'assign'},
+            "SWIFT": {'didset', 'cgfloat', 'float', 'cgsize', 'func', 'let', 'var', 'weak', 'return', 'true', 'false', 'line', 'file', 'try', 'override', 'self', 'keypath', 'case', 'guard', 'some', 'void', 'nil', 'throws', 'private', 'struct', 'class', 'protocol', 'bool', 'static', 'inout', 'int', 'string'},
+            "RUBY": {'true', 'false', 'require', 'module', 'class', 'fi', 'unless', 'begin', 'break', 'self', 'nil', 'void', 'super', 'int', 'bytes', 'array', 'string'},
+            "GROOVY": {'true', 'false', 'null', 'throw', 'return', 'static', 'public', 'private', 'protected', 'super', 'final', 'char', 'string', 'synchronized', 'fi', 'throws', 'long', 'int', 'import', 'new', 'void', 'null', 'char'},
             "JAVASCRIPT": {'case', 'break', 'this', 'static', 'throw', 'var', 'let', 'obj', 'const', 'string', 'export', 'true', 'false', 'return', 'require', 'function', 'exports', 'null', 'void', 'undefined', 'void'},
             "TYPESCRIPT": {'break', 'var', 'case', 'this', 'import', 'let', 'const', 'return', 'public', 'private', 'function', 'null', 'true', 'false', 'string', 'export', 'new', 'void', 'readonly', 'abstract', 'static', 'require', 'exports', 'boolean', 'obj', 'index', 'undefined', 'number'},
-            "C":          {'return', 'int', 'static', 'void', 'case', 'break', 'const', 'struct', 'printf', 'fprintf', 'unsigned', 'extern', 'char', 'float', 'sizeof', 'unsinged', 'undef', 'define'},
-            "CPP":        {'return', 'int', 'static', 'void', 'case', 'break', 'const', 'struct', 'printf', 'fprintf', 'unsigned', 'extern', 'char', 'float', 'sizeof', 'string', 'bool', 'virtual', 'override', 'nullptr', 'final', 'inline', 'template'},
-            "PY":         {'return', 'self', 'import', 'enum', 'true', 'false', 'none', 'class', 'cls', 'super', 'not'},
-            "GO":         {'return', 'nil', 'defer', 'func', 'default'},
-            "CSHARP":     {'return','true','false','null','void','class','struct', 'interface', 'enum', 'namespace', 'using', 'public', 'private', 'protected', 'internal', 'static', 'readonly', 'virtual', 'override', 'abstract', 'new', 'this', 'base', 'event', 'delegate', 'operator', 'implicit', 'explicit'}
+            "C": {'return', 'int', 'static', 'void', 'case', 'break', 'const', 'struct', 'printf', 'fprintf', 'unsigned', 'extern', 'char', 'float', 'sizeof', 'unsigned', 'undef', 'define'},
+            "CPP": {'return', 'int', 'static', 'void', 'case', 'break', 'const', 'struct', 'printf', 'fprintf', 'unsigned', 'extern', 'char', 'float', 'sizeof', 'string', 'bool', 'virtual', 'override', 'nullptr', 'final', 'inline', 'template'},
+            "PY": {'return', 'self', 'import', 'enum', 'true', 'false', 'none', 'class', 'cls', 'super', 'not'},
+            "GO": {'return', 'nil', 'defer', 'func', 'default'},
+            "CSHARP": {'return','true','false','null','void','class','struct', 'interface', 'enum', 'namespace', 'using', 'public', 'private', 'protected', 'internal', 'static', 'readonly', 'virtual', 'override', 'abstract', 'new', 'this', 'base', 'event', 'delegate', 'operator', 'implicit', 'explicit'},
+            "PHP": {'echo', 'print', 'return', 'if', 'else', 'while', 'for', 'foreach', 'function', 'class', 'namespace', 'use', 'public', 'private', 'protected', 'static', 'new', 'true', 'false', 'null', 'array', 'include', 'require', 'require_once', 'return'},
+            "CSS": {'color', 'background', 'border', 'margin', 'padding', 'display', 'width', 'height', 'font', 'text', 'align', 'float', 'position', 'absolute', 'relative', 'static'},
+            "JSON": {'{', '}', '[', ']', ':', ',', 'true', 'false', 'null'}
         }
 
         """The following natural language stopwords should be excluded from the TF-IDF calculation."""
+        
         self.stopwords = {
-            'switch', 'props', 'id', 'and', 'the', 'to', 'of', 'or', 'then', 'any', 'use', 'see', 'do', 'this', 'def', 'end', 'with', 'without', 'if', 'a', 'else', 'in', 'where', 'is', 'it', 'by', 'you', 'for', 'or', 'license', 'all', 'from', 'that', 'an', 'get', 'set', 'as', 'when', 'up', 'ok', 'may', 'foo', 'bar', 'baz', 'at', 'too', 'only', 'but', 'just'
+            'switch', 'props', 'id', 'and', 'the', 'to', 'of', 'or', 'then', 'any', 
+            'use', 'see', 'do', 'this', 'def', 'end', 'with', 'without', 'if', 'a', 
+            'else', 'in', 'where', 'is', 'it', 'by', 'you', 'for', 'or', 'license', 
+            'all', 'from', 'that', 'an', 'get', 'set', 'as', 'when', 'up', 'ok', 
+            'may', 'foo', 'bar', 'baz', 'at', 'too', 'only', 'but', 'just'
         }
 
     @property

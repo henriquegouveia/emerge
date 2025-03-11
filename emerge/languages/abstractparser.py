@@ -37,6 +37,11 @@ class LanguageType(Enum):
     GO = auto()
     CSHARP = auto()
     VBNET = auto()
+    PHP = auto()
+    TWIG = auto()
+    JSON = auto()
+    CSS = auto()
+    SCSS = auto()
 
 
 @unique
@@ -55,7 +60,11 @@ class Parser(Enum):
     GO_PARSER = auto()
     CSHARP_PARSER = auto()
     VBNET_PARSER = auto()
-
+    PHP_PARSER = auto()
+    TWIG_PARSER = auto()
+    JSON_PARSER = auto()
+    CSS_PARSER = auto()
+    SCSS_PARSER = auto()
 
 @unique
 class CoreParsingKeyword(Enum):

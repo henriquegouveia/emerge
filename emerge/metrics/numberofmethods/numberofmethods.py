@@ -53,6 +53,11 @@ class NumberOfMethodsMetric(CodeMetric):
             "GO":         r"func\s*?[a-zA-Z\d_\(\)\:\*\s\-\<\>\?\,\[\]\.]+?\s*?\{",
             "CSHARP":     r"\b(?!if|for|while|switch|catch)\b[a-zA-Z\d_]+?\s*?\([a-zA-Z\d\s_,\>\<\?\*\.\[\]]*?\)\s*?\{",
             "VBNET":     r"\b(Sub|Function)\s+\w+\s*\(.*?\)\s*(As\s+\w+)?\s*(Handles\s+.*)?\s*(.*?)(?=\n|$)",
+            "PHP":        r"function\s+?[a-zA-Z\d_]+\s*?\([a-zA-Z\d\s_,\>\<\?\*\.\[\]\&]*?\)\s*?\{",
+            "TWIG":       r"\{\%\s*?block\s+([a-zA-Z\d_]+)\s*?\%\}.*?\{\%\s*?endblock\s*?\%\}",
+            "JSON":       r"\{.*\}",  # JSON doesn't have functions; this matches JSON objects.
+            "CSS":        r"([a-zA-Z\d_\-]+\s*?\{[^}]*\})",  # CSS rulesets
+            "SCSS":       r"([a-zA-Z\d_\-]+)\s*?\{[^}]*\}",  # SCSS rulesets
         }
 
         self.compiled_re: Dict[str, Pattern] = {}

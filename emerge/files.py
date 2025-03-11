@@ -29,6 +29,11 @@ from emerge.languages.rubyparser import RubyParser
 from emerge.languages.pyparser import PythonParser
 from emerge.languages.csharpparser import CSharpParser
 from emerge.languages.vbnetparser import VBNetParser
+from emerge.languages.phpparser import PHPParser
+from emerge.languages.cssparser import CSSParser
+from emerge.languages.jsonparser import JSONParser
+from emerge.languages.scssparser import SCSSParser
+from emerge.languages.twigparser import TwigParser
 
 from emerge.log import Logger
 
@@ -59,6 +64,15 @@ class LanguageExtension(Enum):
     C_HEADER = '.h'
     PYTHON = '.py'
     GO = '.go'
+    PHP = '.php'
+    INC = '.inc'
+    DRUPAL_MODULE = '.module'
+    DRUPAL_INSTALL = '.install'
+    DRUPAL_THEME = '.theme'
+    TWIG = '.twig'
+    JSON = '.json'
+    CSS = '.css'
+    SCSS = '.scss'
     CSHARP = '.cs'
     VBNET = '.vb'
 
@@ -125,6 +139,16 @@ class FileScanMapper:
             return CSharpParser.parser_name()
         if file_extension == LanguageExtension.VBNET.value:
             return VBNetParser.parser_name()
+        if file_extension == LanguageExtension.PHP.value or file_extension == LanguageExtension.INC.value or file_extension == LanguageExtension.DRUPAL_MODULE.value or file_extension == LanguageExtension.DRUPAL_INSTALL.value or file_extension == LanguageExtension.DRUPAL_THEME.value:
+            return PHPParser.parser_name()
+        if file_extension == LanguageExtension.TWIG.value:
+            return TwigParser.parser_name()
+        if file_extension == LanguageExtension.CSS.value:
+            return CSSParser.parser_name()
+        if file_extension == LanguageExtension.JSON.value:
+            return JSONParser.parser_name()
+        if file_extension == LanguageExtension.SCSS.value:
+            return SCSSParser.parser_name()
         return None
 
 

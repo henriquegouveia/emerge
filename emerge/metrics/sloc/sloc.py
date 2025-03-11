@@ -48,7 +48,11 @@ class SLOCCommentType(Enum):
     GO = {CommentKeyword.LINE_COMMENT.name: "//", CommentKeyword.START_BLOCK_COMMENT.name: "/*", CommentKeyword.STOP_BLOCK_COMMENT.name: "*/"}
     CSHARP = {CommentKeyword.LINE_COMMENT.name: "//", CommentKeyword.START_BLOCK_COMMENT.name: "/*", CommentKeyword.STOP_BLOCK_COMMENT.name: "*/"}
     VBNET = {CommentKeyword.LINE_COMMENT.name: "'", CommentKeyword.START_BLOCK_COMMENT.name: "''", CommentKeyword.STOP_BLOCK_COMMENT.name: "''"}
-
+    PHP = {CommentKeyword.LINE_COMMENT.name: "//", CommentKeyword.START_BLOCK_COMMENT.name: "/*", CommentKeyword.STOP_BLOCK_COMMENT.name: "*/"}
+    TWIG = {CommentKeyword.LINE_COMMENT.name: "{# ", CommentKeyword.START_BLOCK_COMMENT.name: "", CommentKeyword.STOP_BLOCK_COMMENT.name: " #}"}
+    JSON = {CommentKeyword.LINE_COMMENT.name: "//", CommentKeyword.START_BLOCK_COMMENT.name: "", CommentKeyword.STOP_BLOCK_COMMENT.name: ""}
+    CSS = {CommentKeyword.LINE_COMMENT.name: "/*", CommentKeyword.START_BLOCK_COMMENT.name: "/*", CommentKeyword.STOP_BLOCK_COMMENT.name: "*/"}
+    SCSS = {CommentKeyword.LINE_COMMENT.name: "//", CommentKeyword.START_BLOCK_COMMENT.name: "/*", CommentKeyword.STOP_BLOCK_COMMENT.name: "*/"}
 
 class SourceLinesOfCodeMetric(CodeMetric):
 
@@ -168,3 +172,13 @@ class SourceLinesOfCodeMetric(CodeMetric):
             return SLOCCommentType.CSHARP.value
         if result.scanned_language == LanguageType.VBNET:
             return SLOCCommentType.VBNET.value
+        if result.scanned_language == LanguageType.PHP:
+            return SLOCCommentType.PHP.value
+        if result.scanned_language == LanguageType.TWIG:
+            return SLOCCommentType.TWIG.value
+        if result.scanned_language == LanguageType.JSON:
+            return SLOCCommentType.JSON.value
+        if result.scanned_language == LanguageType.CSS:
+            return SLOCCommentType.CSS.value
+        if result.scanned_language == LanguageType.SCSS:
+            return SLOCCommentType.SCSS.value
