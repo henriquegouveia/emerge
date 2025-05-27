@@ -12,6 +12,8 @@ from pathlib import Path
 
 import pyparsing as pp
 import coloredlogs
+import os
+import re
 
 from emerge.languages.abstractparser import AbstractParser, ParsingMixin, Parser, CoreParsingKeyword, LanguageType
 from emerge.results import EntityResult, FileResult
@@ -241,8 +243,33 @@ class JavaParser(AbstractParser, ParsingMixin):
                 if self._is_dependency_in_ignore_list(dependency, analysis):
                     LOGGER.debug(f'ignoring dependency from {result.unique_name} to {dependency}')
                 else:
+                    # make sure that the dependency will be formatted correctly with the correct file extension
+                    dependency = dependency.replace(CoreParsingKeyword.DOT.value, CoreParsingKeyword.SLASH.value)
+
+                    if not dependency.endswith(CoreParsingKeyword.ASTERISK.value) and not dependency.endswith(".java"):
+                        dependency = dependency + ".java"
+
+                    if not dependency.startswith("src/main/java/") and not dependency.startswith("src/test/java/"):
+                        dependency = "src/main/java/" + dependency
+
                     result.scanned_import_dependencies.append(dependency)
                     LOGGER.debug(f'adding import: {dependency}')
+
+        # Detect local dependencies: classes declared in the same folder but used in file
+        try:
+            folder_path = os.path.dirname(result.absolute_name)
+            local_classes = self._extract_local_class_names(folder_path)
+            current_class_match = re.search(r'\bclass\s+([A-Z]\w+)', result.source)
+            current_class = current_class_match.group(1) if current_class_match else None
+            local_deps = self._extract_local_dependencies(result.source, local_classes, current_class)
+            for dep in local_deps:
+                if dep not in result.scanned_import_dependencies:
+                    result.scanned_import_dependencies.append(f"{folder_path}/{dep}")
+                    LOGGER.debug(f'adding local dependency: {dep}')
+        except Exception as e:
+            LOGGER.warning(f"Failed to extract local dependencies: {e}")
+
+
 
     def _add_package_name_to_result(self, result: FileResult):
         LOGGER.debug(f'extracting package name from base result {result.scanned_file_name}...')
@@ -267,6 +294,33 @@ class JavaParser(AbstractParser, ParsingMixin):
 
                 result.analysis.statistics.increment(Statistics.Key.PARSING_HITS)
                 LOGGER.debug(f'package found: {parsing_result.package_name} and added to result')
+
+    def _extract_local_class_names(self, folder_path: str) -> set:
+        local_classes = set()
+        try:
+            for filename in os.listdir(folder_path):
+                if filename.endswith('.java'):
+                    full_path = os.path.join(folder_path, filename)
+                    try:
+                        with open(full_path, 'r') as f:
+                            content = f.read()
+                            matches = re.findall(r'\b(?:public\s+)?class\s+([A-Z]\w+)', content)
+                            local_classes.update(matches)
+                    except Exception as e:
+                        LOGGER.warning(f"Error reading {full_path}: {e}")
+        except Exception as e:
+            LOGGER.warning(f"Error listing directory {folder_path}: {e}")
+        return local_classes
+
+    def _extract_local_dependencies(self, file_content: str, local_classes: set, current_class: str) -> set:
+        dependencies = set()
+        for cls in local_classes:
+            if cls == current_class:
+                continue
+            if re.search(r'\b' + re.escape(cls) + r'\b', file_content):
+                dependencies.add(cls)
+        return dependencies
+
 
     def _add_inheritance_to_entity_result(self, result: AbstractEntityResult):
         LOGGER.debug(f'extracting inheritance from entity result {result.entity_name}...')
